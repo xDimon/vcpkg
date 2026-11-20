@@ -1,0 +1,53 @@
+diff --git a/cmake/soralogConfig.cmake.in b/cmake/soralogConfig.cmake.in
+index b5ecc80..723a8a1 100644
+--- a/cmake/soralogConfig.cmake.in
++++ b/cmake/soralogConfig.cmake.in
+@@ -1,6 +1,7 @@
+ @PACKAGE_INIT@
+ 
+ include(CMakeFindDependencyMacro)
++find_dependency(Threads)
+ find_dependency(fmt CONFIG)
+ find_dependency(yaml-cpp CONFIG)
+ 
+diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
+index 9d0ce90..3d89faa 100644
+--- a/src/CMakeLists.txt
++++ b/src/CMakeLists.txt
+@@ -18,6 +18,9 @@ function (add_for_install target)
+     set(INSTALL_TARGETS ${INSTALL_TARGETS} PARENT_SCOPE)
+ endfunction()
+ 
++set(THREADS_PREFER_PTHREAD_FLAG ON)
++find_package(Threads REQUIRED)
++
+ add_library(sink INTERFACE)
+ target_link_libraries(sink INTERFACE
+     fmt::fmt
+@@ -35,7 +38,7 @@ add_library(sink_to_console
+     )
+ target_link_libraries(sink_to_console
+     sink
+-    pthread
++    Threads::Threads
+     )
+ 
+ add_library(sink_to_file
+@@ -43,7 +46,7 @@ add_library(sink_to_file
+     )
+ target_link_libraries(sink_to_file
+     sink
+-    pthread
++    Threads::Threads
+     )
+ 
+ add_library(sink_to_syslog
+@@ -51,7 +54,7 @@ add_library(sink_to_syslog
+     )
+ target_link_libraries(sink_to_syslog
+     sink
+-    pthread
++    Threads::Threads
+     )
+ 
+ add_library(multisink
